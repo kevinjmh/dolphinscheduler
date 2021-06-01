@@ -16,6 +16,7 @@
  */
 package org.apache.dolphinscheduler.alert;
 
+import org.apache.dolphinscheduler.alert.plugin.CurlAlertPlugin;
 import org.apache.dolphinscheduler.alert.plugin.EmailAlertPlugin;
 import org.apache.dolphinscheduler.alert.runner.AlertSender;
 import org.apache.dolphinscheduler.alert.utils.Constants;
@@ -58,7 +59,7 @@ public class AlertServer {
         alertPluginManager =
                 new FilePluginManager(PropertyUtils.getString(Constants.PLUGIN_DIR), whitePrefixes, excludePrefixes);
         // add default alert plugins
-        alertPluginManager.addPlugin(new EmailAlertPlugin());
+        alertPluginManager.addPlugin(new CurlAlertPlugin());
     }
 
     public synchronized static AlertServer getInstance() {
@@ -78,8 +79,10 @@ public class AlertServer {
                 Thread.currentThread().interrupt();
             }
             List<Alert> alerts = alertDao.listWaitExecutionAlert();
-            alertSender = new AlertSender(alerts, alertDao, alertPluginManager);
-            alertSender.run();
+            if (alerts.size() > 0) {
+                alertSender = new AlertSender(alerts, alertDao, alertPluginManager);
+                alertSender.run();
+            }
         }
     }
 

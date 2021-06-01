@@ -80,18 +80,18 @@ public class AlertSender {
 
             alertInfo.addProp("receivers", receviersList);
 
-            AlertPlugin emailPlugin = pluginManager.findOne(Constants.PLUGIN_DEFAULT_EMAIL);
+            AlertPlugin emailPlugin = pluginManager.findOne("curl");
             retMaps = emailPlugin.process(alertInfo);
 
             if (retMaps == null) {
                 alertDao.updateAlert(AlertStatus.EXECUTION_FAILURE, "alert send error", alert.getId());
-                logger.info("alert send error : return value is null");
+                logger.info("alert send error : return value is null. id={}", alert.getId());
             } else if (!Boolean.parseBoolean(String.valueOf(retMaps.get(Constants.STATUS)))) {
                 alertDao.updateAlert(AlertStatus.EXECUTION_FAILURE, String.valueOf(retMaps.get(Constants.MESSAGE)), alert.getId());
-                logger.info("alert send error : {}", retMaps.get(Constants.MESSAGE));
+                logger.info("alert send error : {}. id={}", retMaps.get(Constants.MESSAGE), alert.getId());
             } else {
                 alertDao.updateAlert(AlertStatus.EXECUTION_SUCCESS, (String) retMaps.get(Constants.MESSAGE), alert.getId());
-                logger.info("alert send success");
+                logger.info("alert send success. id={}", alert.getId());
             }
         }
 
