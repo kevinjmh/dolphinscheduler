@@ -490,7 +490,8 @@ public abstract class AbstractCommandExecutor {
      */
     private String findAppId(String line) {
         Matcher matcher = APPLICATION_REGEX.matcher(line);
-        if (matcher.find()) {
+        if (matcher.find()
+                && !line.contains("org.apache.flink.yarn")) { // for flink task using yarn-session,app will not stop
             return matcher.group();
         }
         return null;
