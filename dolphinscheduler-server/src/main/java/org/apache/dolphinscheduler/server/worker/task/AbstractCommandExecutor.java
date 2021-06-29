@@ -435,16 +435,22 @@ public abstract class AbstractCommandExecutor {
         List<String> logs = convertFile2List(logPath);
 
         List<String> appIds = new ArrayList<>();
+        List<String> flink_appIds = new ArrayList<>();
         /**
          * analysis log?get submited yarn application id
          */
         for (String log : logs) {
             String appId = findAppId(log);
             if (StringUtils.isNotEmpty(appId) && !appIds.contains(appId)) {
+                if (log.contains("org.apache.flink.yarn")) {
+                    // for flink task using yarn-session,app will not stop
+                    flink_appIds.add(appId);
+                }
                 logger.info("find app id: {}", appId);
                 appIds.add(appId);
             }
         }
+        appIds.removeAll(flink_appIds);
         return appIds;
     }
 
@@ -490,8 +496,7 @@ public abstract class AbstractCommandExecutor {
      */
     private String findAppId(String line) {
         Matcher matcher = APPLICATION_REGEX.matcher(line);
-        if (matcher.find()
-                && !line.contains("org.apache.flink.yarn")) { // for flink task using yarn-session,app will not stop
+        if (matcher.find()) {
             return matcher.group();
         }
         return null;
