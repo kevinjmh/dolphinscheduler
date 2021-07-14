@@ -429,6 +429,7 @@ public class HadoopUtils implements Closeable {
             case Constants.ACCEPTED:
                 return ExecutionStatus.SUBMITTED_SUCCESS;
             case Constants.SUCCEEDED:
+            case "ENDED": // for hive on Tez. hadoop2.8.3
                 return ExecutionStatus.SUCCESS;
             case Constants.NEW:
             case Constants.NEW_SAVING:
