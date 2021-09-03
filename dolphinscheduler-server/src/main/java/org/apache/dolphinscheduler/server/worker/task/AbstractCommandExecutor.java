@@ -441,16 +441,20 @@ public abstract class AbstractCommandExecutor {
          */
         for (String log : logs) {
             String appId = findAppId(log);
-            if (StringUtils.isNotEmpty(appId) && !appIds.contains(appId)) {
-                if (log.contains("org.apache.flink.yarn")) {
+            if (StringUtils.isNotEmpty(appId)) {
+                if (!appIds.contains(appId)) {
+                    logger.info("find app id: {}", appId);
+                    appIds.add(appId);
+                }
+                if (log.contains("org.apache.flink.yarn") && !flink_appIds.contains(appId)) {
                     // for flink task using yarn-session,app will not stop
+                    logger.info("find flink app id: {}", appId);
                     flink_appIds.add(appId);
                 }
-                logger.info("find app id: {}", appId);
-                appIds.add(appId);
             }
         }
         appIds.removeAll(flink_appIds);
+        logger.info("total found app id: {}", appIds.size());
         return appIds;
     }
 
