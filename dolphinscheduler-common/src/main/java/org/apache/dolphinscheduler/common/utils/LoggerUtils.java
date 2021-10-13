@@ -92,6 +92,11 @@ public class LoggerUtils {
                 appIds.add(appId);
             }
         }
+
+        if (log.contains("SKIP_APPID_CHECK")) {
+            logger.info("keyword `SKIP_APPID_CHECK` found! Please kill application in yarn by yourself.");
+            appIds.clear();
+        }
         return appIds;
     }
 

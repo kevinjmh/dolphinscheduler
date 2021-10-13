@@ -440,6 +440,10 @@ public abstract class AbstractCommandExecutor {
          * analysis log?get submited yarn application id
          */
         for (String log : logs) {
+            if (log.contains("SKIP_APPID_CHECK")) {
+                logger.info("keyword `SKIP_APPID_CHECK` found! Yarn application status check will skip.");
+                return new ArrayList<>();
+            }
             String appId = findAppId(log);
             if (StringUtils.isNotEmpty(appId)) {
                 if (!appIds.contains(appId)) {
