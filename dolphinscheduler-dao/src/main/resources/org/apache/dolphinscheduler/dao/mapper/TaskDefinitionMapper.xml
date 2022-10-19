@@ -86,6 +86,12 @@
         delete from t_ds_task_definition
         where code = #{code}
     </delete>
+    <delete id="deleteByProcessDefinitionCode">
+        delete from t_ds_task_definition
+        where code in (select post_task_code
+        from t_ds_process_task_relation
+        where process_definition_code = #{code})
+    </delete>
     <insert id="batchInsert">
         insert into t_ds_task_definition (code, name, version, description, project_code, user_id,
         task_type, task_params, flag, task_priority, worker_group, environment_code, fail_retry_times, fail_retry_interval,

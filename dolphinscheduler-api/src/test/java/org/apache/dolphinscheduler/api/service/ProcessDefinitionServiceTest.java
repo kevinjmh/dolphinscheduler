@@ -64,6 +64,7 @@ import org.apache.dolphinscheduler.dao.mapper.ProcessDefinitionMapper;
 import org.apache.dolphinscheduler.dao.mapper.ProcessTaskRelationMapper;
 import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
 import org.apache.dolphinscheduler.dao.mapper.ScheduleMapper;
+import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionMapper;
 import org.apache.dolphinscheduler.dao.mapper.TenantMapper;
 import org.apache.dolphinscheduler.dao.model.PageListingResult;
 import org.apache.dolphinscheduler.dao.repository.ProcessDefinitionDao;
@@ -133,6 +134,9 @@ public class ProcessDefinitionServiceTest extends BaseServiceTestTool {
 
     @Mock
     private ProcessTaskRelationMapper processTaskRelationMapper;
+
+    @Mock
+    private TaskDefinitionMapper taskDefinitionMapper;
 
     @Mock
     private ProjectMapper projectMapper;
@@ -496,6 +500,7 @@ public class ProcessDefinitionServiceTest extends BaseServiceTestTool {
         schedule.setReleaseState(ReleaseState.OFFLINE);
         Mockito.when(processDefinitionMapper.deleteById(46)).thenReturn(1);
         Mockito.when(scheduleMapper.deleteById(schedule.getId())).thenReturn(1);
+        Mockito.when(taskDefinitionMapper.deleteByProcessDefinitionCode(processDefinition.getCode())).thenReturn(2);
         Mockito.when(processTaskRelationMapper.deleteByCode(project.getCode(), processDefinition.getCode()))
                 .thenReturn(1);
         Mockito.when(scheduleMapper.queryByProcessDefinitionCode(46L)).thenReturn(getSchedule());
